@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex GO - Info de Evolução</title>
+    <style>
+        :root {
+            --primary-color: #e3350d;
+            --primary-dark: #b52a0a;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --accent-color: #ffcb05;
+            --accent-dark: #e6b800;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .pokedex-container {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Cabeçalho estilo App */
+        .pokedex-header {
+            background-color: var(--primary-color);
+            padding: 24px 20px 20px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            margin: 0 0 16px 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Sistema de Abas Modernizado */
+        .tabs {
+            display: flex;
+            background-color: rgba(0, 0, 0, 0.15);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 9px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Conteúdo Principal */
+        .pokedex-body {
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Caixa de Busca */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-main {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+        .btn-main:hover, .btn-main:active {
+            background-color: var(--primary-dark);
+        }
+
+        /* Telas de Exibição / Resultados */
+        .result-screen {
+            background-color: #f8fafc;
+            border-radius: 16px;
+            padding: 18px;
+            min-height: 160px;
+            border: 1px solid #edf2f7;
+            box-sizing: border-box;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 40px 10px;
+            line-height: 1.5;
+        }
+
+        /* Informações do Pokémon */
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .poke-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            font-weight: 700;
+            color: #4a5568;
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .value {
+            color: var(--text-main);
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #edf2f7;
+            margin: 14px 0;
+        }
+
+        /* Botões de Ação */
+        .btn-save {
+            background-color: var(--accent-color);
+            color: #222;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-save:hover {
+            background-color: var(--accent-dark);
+        }
+
+        .btn-save:active {
+            transform: scale(0.95);
+        }
+
+        .btn-remove {
+            background-color: transparent;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: all 0.2s;
+            width: auto;
+        }
+
+        .btn-remove:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .error {
+            color: var(--danger-color);
+            font-weight: 600;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* Itens na Lista da Biblioteca */
+        .library-scroll {
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .library-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .library-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .library-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid var(--accent-color);
+            padding: 14px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .library-item:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pokedex-container">
+        <div class="pokedex-header">
+            <h1>📱 Dex GO Helper</h1>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('busca')">🔍 Buscar</button>
+                <button class="tab-btn" onclick="switchTab('biblioteca')">📚 Biblioteca</button>
+            </div>
+        </div>
+
+        <div class="pokedex-body">
+            <div id="tab-busca" class="tab-content active">
+                <div class="search-box">
+                    <input type="number" id="pokeNumber" placeholder="Nº da Pokédex (ex: 4)" min="1">
+                    <button class="btn-main" onclick="buscarPokemon()">Buscar</button>
+                </div>
+
+                <div class="result-screen" id="resultado">
+                    <div class="placeholder-text">
+                        Digite o número do Pokémon acima para ver as informações de evolução e captura.
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-biblioteca" class="tab-content">
+                <div class="result-screen library-scroll" id="biblioteca-lista">
+                    <div class="placeholder-text">
+                        Sua biblioteca está vazia. Salve Pokémons na aba de busca!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados original protegido
+        const pokemonDB = {
+            "1": { nome: "Bulbasaur", anteEvolucao: "Nenhuma", doces: 25, metodo: "Encontrado selvagem, em ovos ou pesquisas de campo." },
+            "2": { nome: "Ivysaur", anteEvolucao: "Bulbasaur", doces: 100, metodo: "Evolução do Bulbasaur ou selvagem." },
+            "3": { nome: "Venusaur", anteEvolucao: "Ivysaur", doces: "N/A (Estágio Final)", metodo: "Evolução do Ivysaur ou em Mega Reides." },
+            "4": { nome: "Charmander", anteEvolucao: "Nenhuma", doces: 25, metodo: "Encontrado selvagem, em ovos ou pesquisas." },
+            "5": { nome: "Charmeleon", anteEvolucao: "Charmander", doces: 100, metodo: "Evolução do Charmander ou selvagem." },
+            "6": { nome: "Charizard", anteEvolucao: "Charmeleon", doces: "N/A (Estágio Final)", metodo: "Evolução do Charmeleon ou em Mega Reides." },
+            "7": { nome: "Squirtle", anteEvolucao: "Nenhuma", doces: 25, metodo: "Encontrado selvagem, em ovos ou pesquisas." },
+            "8": { nome: "Wartortle", anteEvolucao: "Squirtle", doces: 100, metodo: "Evolução do Squirtle ou selvagem." },
+            "9": { nome: "Blastoise", anteEvolucao: "Wartortle", doces: "N/A (Estágio Final)", metodo: "Evolução do Wartortle ou em Mega Reides." },
+            "10": { nome: "Caterpie", anteEvolucao: "Nenhuma", doces: 12, metodo: "Muito comum selvagem. Ótimo para farmar XP de evolução." },
+            "11": { nome: "Metapod", anteEvolucao: "Caterpie", doces: 50, metodo: "Evolução do Caterpie ou selvagem." },
+            "12": { nome: "Butterfree", anteEvolucao: "Metapod", doces: "N/A (Estágio Final)", metodo: "Evolução do Metapod." },
+            "13": { nome: "Weedle", anteEvolucao: "Nenhuma", doces: 12, metodo: "Muito comum selvagem. Ótimo para farmar XP de evolução." },
+            "14": { nome: "Kakuna", anteEvolucao: "Weedle", doces: 50, metodo: "Evolução do Weedle ou selvagem." },
+            "15": { nome: "Beedrill", anteEvolucao: "Kakuna", doces: "N/A (Estágio Final)", metodo: "Evolução do Kakuna ou Mega Reides." },
+            "16": { nome: "Pidgey", anteEvolucao: "Nenhuma", doces: 12, metodo: "Comum selvagem, ovos de 2km e pesquisas de campo." },
+            "17": { nome: "Pidgeotto", anteEvolucao: "Pidgey", doces: 50, metodo: "Evolução do Pidgey ou encontrado selvagem." },
+            "18": { nome: "Pidgeot", anteEvolucao: "Pidgeotto", doces: "N/A (Estágio Final)", metodo: "Evolução do Pidgeotto ou em Mega Reides." },
+            "19": { nome: "Rattata", anteEvolucao: "Nenhuma", doces: 25, metodo: "Muito comum selvagem and em pesquisas de campo." },
+            "20": { nome: "Raticate", anteEvolucao: "Rattata", doces: "N/A (Estágio Final)", metodo: "Evolução do Rattata ou encontrado selvagem." },
+            "21": { nome: "Spearow", anteEvolucao: "Nenhuma", doces: 50, metodo: "Encontrado selvagem com frequência." },
+            "22": { nome: "Fearow", anteEvolucao: "Spearow", doces: "N/A (Estágio Final)", metodo: "Evolução do Spearow ou selvagem." },
+            "23": { nome: "Ekans", anteEvolucao: "Nenhuma", doces: 50, metodo: "Encontrado selvagem, principalmente em clima nublado." },
+            "24": { nome: "Arbok", anteEvolucao: "Ekans", doces: "N/A (Estágio Final)", metodo: "Evolução do Ekans ou selvagem." },
+            "25": { nome: "Pikachu", anteEvolucao: "Pichu (Apenas em Ovos)", doces: 50, metodo: "Selvagem, pesquisas de campo, eventos ou evoluindo Pichu." },
+            "26": { nome: "Raichu", anteEvolucao: "Pikachu", doces: "N/A (Estágio Final)", metodo: "Evolução do Pikachu ou em Reides de 3 estrelas." },
+            "39": { nome: "Jigglypuff", anteEvolucao: "Igglybuff (Apenas em Ovos)", doces: 50, metodo: "Comum selvagem ou evoluindo Igglybuff." },
+            "40": { nome: "Wigglytuff", anteEvolucao: "Jigglypuff", doces: "N/A (Estágio Final)", metodo: "Evolução do Jigglypuff ou encontrado selvagem." },
+            "41": { nome: "Zubat", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (comum à noite ou Clima Nublado) e em tarefas de pesquisa." },
+            "42": { nome: "Golbat", anteEvolucao: "Zubat", doces: 100, metodo: "Evolução do Zubat ou selvagem. Evolui para Crobat com 100 doces." },
+            "43": { nome: "Oddish", anteEvolucao: "Nenhuma", doces: 25, metodo: "Comum selvagem (Clima Ensolarado/Nublado) e Ovos de 2km." },
+            "44": { nome: "Gloom", anteEvolucao: "Oddish", doces: "100 ou 100 + Item", metodo: "Evolução do Oddish. Requer 100 doces para Vileplume OU 100 doces + Pedra Solar para Bellossom." },
+            "45": { nome: "Vileplume", anteEvolucao: "Gloom", doces: "N/A (Estágio Final)", metodo: "Evolução do Gloom com 100 doces." },
+            "46": { nome: "Paras", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado/Chuvoso). Fornece bônus de Poeira Estelar na captura!" },
+            "47": { nome: "Parasect", anteEvolucao: "Paras", doces: "N/A (Estágio Final)", metodo: "Evolução do Paras ou encontrado selvagem." },
+            "48": { nome: "Venonat", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem comum (Clima Nublado/Chuvoso) e tarefas de pesquisa." },
+            "49": { nome: "Venomoth", anteEvolucao: "Venonat", doces: "N/A (Estágio Final)", metodo: "Evolução do Venonat ou selvagem." },
+            "50": { nome: "Diglett", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado) e Ovos de 2km." },
+            "51": { nome: "Dugtrio", anteEvolucao: "Diglett", doces: "N/A (Estágio Final)", metodo: "Evolução do Diglett ou encontrado selvagem." },
+            "52": { nome: "Meowth", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Parcialmente Nublado). Dá muita Poeira Estelar ao capturar!" },
+            "53": { nome: "Persian", anteEvolucao: "Meowth", doces: "N/A (Estágio Final)", metodo: "Evolução do Meowth ou completando tarefas da Equipe GO Rocket." },
+            "54": { nome: "Psyduck", anteEvolucao: "Nenhuma", doces: 50, metodo: "Muito comum selvagem perto de rios e praias (Clima Chuvoso)." },
+            "55": { nome: "Golduck", anteEvolucao: "Psyduck", doces: "N/A (Estágio Final)", metodo: "Evolução do Psyduck ou selvagem." },
+            "56": { nome: "Mankey", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Nublado) e tarefas de pesquisa de campo." },
+            "57": { nome: "Primeape", anteEvolucao: "Mankey", doces: 100, metodo: "Evolução do Mankey. Pode evoluir para Annihilape após cumprir o desafio de companheiro." },
+            "58": { nome: "Growlithe", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em Clima Ensolarado), Ovos de 5km e pesquisas." },
+            "59": { nome: "Arcanine", anteEvolucao: "Growlithe", doces: "N/A (Estágio Final)", metodo: "Evolução do Growlithe ou raramente selvagem." },
+            "60": { nome: "Poliwag", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem comum perto de água (Clima Chuvoso) and Ovos de 2km." },
+            "61": { nome: "Poliwhirl", anteEvolucao: "Poliwag", doces: "100 ou 100 + Item", metodo: "Evolução do Poliwag. Requer 100 doces para Poliwrath OU 100 doces + Pedra do Rei para Politoed." },
+            "62": { nome: "Poliwrath", anteEvolucao: "Poliwhirl", doces: "N/A (Estágio Final)", metodo: "Evolução do Poliwhirl ou em Reides de 3 estrelas." },
+            "63": { nome: "Abra", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (Clima Ventoso), foge muito fácil se não capturado de primeira!" },
+            "64": { nome: "Kadabra", anteEvolucao: "Abra", doces: 100, metodo: "Evolução do Abra. Custo cai para 0 doces se recebido em Troca!" },
+            "65": { nome: "Alakazam", anteEvolucao: "Kadabra", doces: "N/A (Estágio Final)", metodo: "Evolução do Kadabra (Custo cai para 0 doces se o Kadabra veio de Troca) ou em Mega Reides." },
+            "66": { nome: "Machop", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (Clima Nublado/Lutador), Ovos de 2km e pesquisas de campo." },
+            "67": { nome: "Machoke", anteEvolucao: "Machop", doces: 100, metodo: "Evolução do Machop ou selvagem. (Custo de evolução para Machamp cai para 0 se recebido em Troca)." },
+            "68": { nome: "Machamp", anteEvolucao: "Machoke", doces: "N/A (Estágio Final)", metodo: "Evolução do Machoke ou em Reides de 3 estrelas. Um dos melhores atacantes do jogo." },
+            "69": { nome: "Bellsprout", anteEvolucao: "Nenhuma", doces: 25, metodo: "Comum selvagem (Clima Ensolarado/Nublado) e pesquisas." },
+            "70": { nome: "Weepinbell", anteEvolucao: "Bellsprout", doces: 100, metodo: "Evolução do Bellsprout ou selvagem." },
+            "71": { nome: "Victreebel", anteEvolucao: "Weepinbell", doces: "N/A (Estágio Final)", metodo: "Evolução do Weepinbell." },
+            "72": { nome: "Tentacool", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem em biomas de água ou Clima Chuvoso/Nublado." },
+            "73": { nome: "Tentacruel", anteEvolucao: "Tentacool", doces: "N/A (Estágio Final)", metodo: "Evolução do Tentacool ou selvagem." },
+            "74": { nome: "Geodude", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (Clima Parcialmente Nublado/Ensolarado) e Ovos de 2km." },
+            "75": { nome: "Graveler", anteEvolucao: "Geodude", doces: 100, metodo: "Evolução do Geodude ou selvagem. (Custo de evolução para Golem cai para 0 se recebido em Troca)." },
+            "76": { nome: "Golem", anteEvolucao: "Graveler", doces: "N/A (Estágio Final)", metodo: "Evolução do Graveler ou em Reides de 3 estrelas." },
+            "77": { nome: "Ponyta", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado), Ovos de 5km e pesquisas." },
+            "78": { nome: "Rapidash", anteEvolucao: "Ponyta", doces: "N/A (Estágio Final)", metodo: "Evolução do Ponyta ou selvagem." },
+            "79": { nome: "Slowpoke", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem perto de água (Clima Chuvoso/Ventoso) e Ovos de 2km." },
+            "80": { nome: "Slowbro", anteEvolucao: "Slowpoke", doces: "N/A (Estágio Final)", metodo: "Evolução do Slowpoke com 50 doces OU evolui para Slowking com 50 doces + Pedra do Rei. Possui Megaevolução." },
+            "81": { magnets: "Magnemite", nome: "Magnemite", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em Clima Chuvoso ou Neve) e Ovos de 2km." },
+            "82": { nome: "Magneton", anteEvolucao: "Magnemite", doces: 100, metodo: "Evolução do Magnemite. (Evolui para Magnezone com 100 doces perto de um Módulo Atração Magnético)." },
+            "83": { nome: "Farfetch'd", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Regional exclusivo da Ásia. Às vezes disponível globalmente em eventos de formato especial." },
+            "84": { nome: "Doduo", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (principalmente em Clima Parcialmente Nublado/Vento) e pesquisas." },
+            "85": { nome: "Dodrio", anteEvolucao: "Doduo", doces: "N/A (Estágio Final)", metodo: "Evolução do Doduo ou encontrado raramente selvagem." },
+            "86": { nome: "Seel", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem em áreas costeiras (Clima Chuvoso ou Neve) e pesquisas de campo." },
+            "87": { nome: "Dewgong", anteEvolucao: "Seel", doces: "N/A (Estágio Final)", metodo: "Evolução do Seel ou em Reides de 3 estrelas." },
+            "88": { nome: "Grimer", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Nublado/Venenoso), Ovos de 5km e tarefas de pesquisa." },
+            "89": { nome: "Muk", anteEvolucao: "Grimer", doces: "N/A (Estágio Final)", metodo: "Evolução do Grimer ou raramente selvagem." },
+            "90": { nome: "Shellder", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum perto de água) e Ovos de 2km. Dá muita Poeira Estelar na captura!" },
+            "91": { nome: "Cloyster", anteEvolucao: "Shellder", doces: "N/A (Estágio Final)", metodo: "Evolução do Shellder com 50 doces." },
+            "92": { nome: "Gastly", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (comum à noite ou Clima Nublado/Névoa) e pesquisas." },
+            "93": { nome: "Haunter", anteEvolucao: "Gastly", doces: 100, metodo: "Evolução do Gastly ou selvagem." },
+            "94": { nome: "Gengar", anteEvolucao: "Haunter", doces: "N/A (Estágio Final)", metodo: "Evolução do Haunter (Custo cai para 0 se veio de Troca) ou em Mega Reides." },
+            "95": { nome: "Onix", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem, Ovos de 5km ou pesquisas. (Evolui para Steelix com Revestimento Metálico)." },
+            "96": { nome: "Drowzee", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ventoso) and tarefas de pesquisa." },
+            "97": { nome: "Hypno", anteEvolucao: "Drowzee", doces: "N/A (Estágio Final)", metodo: "Evolução do Drowzee." },
+            "98": { nome: "Krabby", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem perto de praias/rios (Clima Chuvoso)." },
+            "99": { nome: "Kingler", anteEvolucao: "Krabby", doces: "N/A (Estágio Final)", metodo: "Evolução do Krabby." },
+            "100": { nome: "Voltorb", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em áreas urbanas/industriais ou Clima Chuvoso)." },
+            "101": { nome: "Electrode", anteEvolucao: "Voltorb", doces: "N/A (Estágio Final)", metodo: "Evolução do Voltorb." },
+            "102": { nome: "Exeggcute", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado/Ventoso) e pesquisas." },
+            "103": { nome: "Exeggutor", anteEvolucao: "Exeggcute", doces: "N/A (Estágio Final)", metodo: "Evolução do Exeggcute com 50 doces." },
+            "104": { nome: "Cubone", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado/Terrestre) e Ovos de 5km." },
+            "105": { nome: "Marowak", anteEvolucao: "Cubone", doces: "N/A (Estágio Final)", metodo: "Evolução do Cubone." },
+            "106": { nome: "Hitmonlee", anteEvolucao: "Tyrogue (Apenas em Ovos)", doces: "N/A", metodo: "Selvagem raro, pesquisas ou evoluindo Tyrogue (se o Ataque for o maior atributo)." },
+            "107": { nome: "Hitmonchan", anteEvolucao: "Tyrogue (Apenas em Ovos)", doces: "N/A", metodo: "Selvagem raro, pesquisas ou evoluindo Tyrogue (se a Defesa for o maior atributo)." },
+            "108": { nome: "Lickitung", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem raro, Ovos de 5km e Reides. Muito forte na Liga Grande!" },
+            "109": { nome: "Koffing", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Nublado) e pesquisas de campo." },
+            "110": { nome: "Weezing", anteEvolucao: "Koffing", doces: "N/A (Estágio Final)", metodo: "Evolução do Koffing." },
+            "111": { nome: "Rhyhorn", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (Clima Ensolarado/Parcialmente Nublado) e Ovos de 2km." },
+            "112": { nome: "Rhydon", anteEvolucao: "Rhyhorn", doces: 100, metodo: "Evolução do Rhyhorn. (Evolui para Rhyperior com 100 doces + Pedra de Sinnoh)." },
+            "113": { nome: "Chansey", anteEvolucao: "Happiny (Apenas em Ovos)", doces: 50, metodo: "Selvagem rara, pesquisas ou evoluindo Happiny. Tem muita vida!" },
+            "114": { nome: "Tangela", anteEvolucao: "Nenhuma", doces: 100, metodo: "Selvagem (Clima Ensolarado). Evolui para Tangrowth com Pedra de Sinnoh." },
+            "115": { nome: "Kangaskhan", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Regional exclusivo da Austrália. Disponível globalmente em Mega Reides." },
+            "116": { nome: "Horsea", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem perto de água (Clima Chuvoso) e Ovos de 2km." },
+            "117": { nome: "Seadra", anteEvolucao: "Horsea", doces: 100, metodo: "Evolução do Horsea. (Evolui para Kingdra com Escama Dragão)." },
+            "118": { nome: "Goldeen", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem comum em biomas de água." },
+            "119": { nome: "Seaking", anteEvolucao: "Goldeen", doces: "N/A (Estágio Final)", metodo: "Evolução do Goldeen." },
+            "120": { nome: "Staryu", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem perto de água. Dá bônus de Poeira Estelar ao capturar!" },
+            "121": { nome: "Starmie", anteEvolucao: "Staryu", doces: "N/A (Estágio Final)", metodo: "Evolução do Staryu." },
+            "122": { nome: "Mr. Mime", anteEvolucao: "Mime Jr. (Ovos na Europa)", doces: "N/A", metodo: "Regional exclusivo da Europa." },
+            "123": { nome: "Scyther", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem, Ovos de 5km e Reides. Evolui para Scizor com Revestimento Metálico." },
+            "124": { nome: "Jynx", anteEvolucao: "Smoochum (Apenas em Ovos)", doces: "N/A", metodo: "Selvagem (Clima de Neve/Ventoso) ou evoluindo Smoochum." },
+            "125": { nome: "Electabuzz", anteEvolucao: "Elekid (Apenas em Ovos)", doces: 100, metodo: "Selvagem, Reides ou evoluindo Elekid. Evolui para Electivire com Pedra de Sinnoh." },
+            "126": { nome: "Magmar", anteEvolucao: "Magby (Apenas em Ovos)", doces: 100, metodo: "Selvagem, Reides ou evoluindo Magby. Evolui para Magmortar com Pedra de Sinnoh." },
+            "127": { nome: "Pinsir", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Selvagem (Clima Chuvoso), Reides de 3 estrelas e Mega Reides." },
+            "128": { nome: "Tauros", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Regional exclusivo da América do Norte." },
+            "129": { nome: "Magikarp", anteEvolucao: "Nenhuma", doces: 400, metodo: "Selvagem perto de água. Requer muitos doces para evoluir!" },
+            "130": { nome: "Gyarados", anteEvolucao: "Magikarp", doces: "N/A (Estágio Final)", metodo: "Evolução da Magikarp ou em Mega Reides. Excelente Pokémon." },
+            "131": { nome: "Lapras", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Selvagem muito raro, pesquisas de campo e Reides de 3 estrelas." },
+            "132": { nome: "Ditto", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Se disfarça de outros Pokémon no mapa (ex: Diglett, Grimer). Só revela a forma após a captura!" },
+            "133": { nome: "Eevee", anteEvolucao: "Nenhuma", doces: 25, metodo: "Muito comum selvagem, Ovos de 5km e pesquisas. Tem 8 evoluções no total!" },
+            "134": { nome: "Vaporeon", anteEvolucao: "Eevee", doces: "N/A", metodo: "Evolução aleatória do Eevee (ou use o truque do nome: 'Rainer' antes de evoluir - funciona apenas uma vez)." },
+            "135": { nome: "Jolteon", anteEvolucao: "Eevee", doces: "N/A", metodo: "Evolução aleatória do Eevee (ou use o truque do nome: 'Sparky' antes de evoluir - funciona apenas uma vez)." },
+            "136": { nome: "Flareon", anteEvolucao: "Eevee", doces: "N/A", metodo: "Evolução aleatória do Eevee (ou use o truque do nome: 'Pyro' antes de evoluir - funciona apenas uma vez)." },
+            "137": { nome: "Porygon", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem, Ovos de 5km e pesquisas. Evolui para Porygon2 com Upgrade." },
+            "138": { nome: "Omanyte", anteEvolucao: "Nenhuma", doces: 50, metodo: "Fóssil obtido selvagem ou em tarefas de pesquisas temáticas." },
+            "139": { nome: "Omastar", anteEvolucao: "Omanyte", doces: "N/A (Estágio Final)", metodo: "Evolução do Omanyte." },
+            "140": { nome: "Kabuto", anteEvolucao: "Nenhuma", doces: 50, metodo: "Fóssil obtido selvagem ou em pesquisas temáticas." },
+            "141": { nome: "Kabutops", anteEvolucao: "Kabuto", doces: "N/A (Estágio Final)", metodo: "Evolução do Kabuto." },
+            "142": { nome: "Aerodactyl", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Selvagem raro, Ovos de 10km, tarefas de 'Vencer 5 Reides' ou Mega Reides." },
+            "143": { nome: "Snorlax", anteEvolucao: "Munchlax (Apenas em Ovos)", doces: "N/A", metodo: "Selvagem raro, Reides de 3 estrelas ou evoluindo Munchlax." },
+            "144": { nome: "Articuno de Galar", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Exclusivo do Incenso de Aventura Diário. Extremamente difícil de capturar!" },
+            "145": { nome: "Zapdos", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Exclusivo de Reides de 5 estrelas ou encontros especiais de Pesquisa Lendária." },
+            "146": { nome: "Moltres", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Exclusivo de Reides de 5 estrelas ou encontros especiais de Pesquisa Lendária." },
+            "147": { nome: "Dratini", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem raro (perto de água/Clima Ventoso), Ovos de 10km e pesquisas." },
+            "148": { nome: "Dragonair", anteEvolucao: "Dratini", doces: 100, metodo: "Evolução do Dratini ou selvagem raro." },
+            "149": { nome: "Dragonite", anteEvolucao: "Dragonair", doces: "N/A (Estágio Final)", metodo: "Evolução do Dragonair. Um dos melhores atacantes gerais do jogo." },
+            "150": { nome: "Mewtwo", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Reides Lendárias de 5 estrelas (ou Reides Obscuras). Um dos Pokémon mais poderosos do GO." },
+            "151": { nome: "Mew", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Mítico exclusivo da Pesquisa Especial mestre: 'Uma Descoberta Mítica'." }
+        };
+
+        // Alternar entre as Abas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'busca') {
+                document.querySelector('.tabs button:nth-child(1)').classList.add('active');
+                document.getElementById('tab-busca').classList.add('active');
+            } else if (tabName === 'biblioteca') {
+                document.querySelector('.tabs button:nth-child(2)').classList.add('active');
+                document.getElementById('tab-biblioteca').classList.add('active');
+                renderBiblioteca();
+            }
+        }
+
+        // Buscar Pokémon por Número
+        function buscarPokemon() {
+            const numero = String(document.getElementById("pokeNumber").value).trim();
+            const telaResultado = document.getElementById("resultado");
+
+            if (!numero || numero === "0") {
+                telaResultado.innerHTML = '<div class="error">Por favor, digite um número válido!</div>';
+                return;
+            }
+
+            const poke = pokemonDB[numero];
+
+            if (poke) {
+                telaResultado.innerHTML = `
+                    <div class="info-header">
+                        <span class="poke-title">#${numero} - ${poke.nome}</span>
+                        <button class="btn-save" onclick="salvarNaBiblioteca('${numero}')">⭐ Salvar</button>
+                    </div>
+                    <hr>
+                    <div class="info-row">
+                        <span class="label">Antecessora</span>
+                        <span class="value">${poke.anteEvolucao}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Doces Necessários</span>
+                        <span class="value">${poke.doces}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Como Obter / Notas adicionais</span>
+                        <span class="value">${poke.metodo}</span>
+                    </div>
+                `;
+            } else {
+                telaResultado.innerHTML = `
+                    <div class="error">
+                        Pokémon #${numero} ainda não foi cadastrado no sistema.
+                    </div>
+                `;
+            }
+        }
+
+        // Salvar na biblioteca (LocalStorage)
+        function salvarNaBiblioteca(numero) {
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+            
+            if (!biblioteca.includes(numero)) {
+                biblioteca.push(numero);
+                localStorage.setItem('pokeBiblioteca', JSON.stringify(biblioteca));
+                alert(`${pokemonDB[numero].nome} foi adicionado à sua Biblioteca!`);
+            } else {
+                alert('Este Pokémon já se encontra salvo na sua biblioteca!');
+            }
+        }
+
+        // Remover da biblioteca
+        function removerDaBiblioteca(numero) {
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+            biblioteca = biblioteca.filter(id => id !== numero);
+            localStorage.setItem('pokeBiblioteca', JSON.stringify(biblioteca));
+            renderBiblioteca();
+        }
+
+        // Mostrar os itens salvos na aba Biblioteca
+        function renderBiblioteca() {
+            const container = document.getElementById('biblioteca-lista');
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+
+            if (biblioteca.length === 0) {
+                container.innerHTML = `
+                    <div class="placeholder-text">
+                        Sua biblioteca está vazia.<br>Guarde seus Pokémons favoritos na aba de busca!
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            // Ordenar por número para ficar organizado
+            biblioteca.sort((a, b) => Number(a) - Number(b));
+
+            biblioteca.forEach(numero => {
+                const poke = pokemonDB[numero];
+                if (poke) {
+                    container.innerHTML += `
+                        <div class="library-item">
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-main);">#${numero} - ${poke.nome}</div>
+                            <div style="font-size: 13px; margin: 6px 0; color: #555;">
+                                <b>Evolução:</b> ${poke.anteEvolucao} | <b>Doces:</b> ${poke.doces}
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">${poke.metodo}</div>
+                            <button class="btn-remove" onclick="removerDaBiblioteca('${numero}')">Excluir</button>
+                        </div>
+                    `;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

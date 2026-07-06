@@ -321,6 +321,7 @@
 
     <script>
         // Banco de dados original protegido
+// Banco de dados totalmente ordenado e corrigido
         const pokemonDB = {
             "1": { nome: "Bulbasaur", anteEvolucao: "Nenhuma", doces: 25, metodo: "Encontrado selvagem, em ovos ou pesquisas de campo." },
             "2": { nome: "Ivysaur", anteEvolucao: "Bulbasaur", doces: 100, metodo: "Evolução do Bulbasaur ou selvagem." },
@@ -348,28 +349,23 @@
             "24": { nome: "Arbok", anteEvolucao: "Ekans", doces: "N/A (Estágio Final)", metodo: "Evolução do Ekans ou selvagem." },
             "25": { nome: "Pikachu", anteEvolucao: "Pichu (Apenas em Ovos)", doces: 50, metodo: "Selvagem, pesquisas de campo, eventos ou evoluindo Pichu." },
             "26": { nome: "Raichu", anteEvolucao: "Pikachu", doces: "N/A (Estágio Final)", metodo: "Evolução do Pikachu ou em Reides de 3 estrelas." },
+            "27": { nome: "Sandshrew", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado), Ovos de 2km e pesquisas de campo." },
+            "28": { nome: "Sandslash", anteEvolucao: "Sandshrew", doces: "N/A (Estágio Final)", metodo: "Evolução do Sandshrew ou encontrado selvagem." },
+            "29": { nome: "Nidoran ♀", anteEvolucao: "Nenhuma", doces: 25, metodo: "Muito comum selvagem (Clima Nublado) e em tarefas de pesquisa." },
+            "30": { nome: "Nidorina", anteEvolucao: "Nidoran ♀", doces: 100, metodo: "Evolução da Nidoran ♀ ou selvagem." },
+            "31": { nome: "Nidoqueen", anteEvolucao: "Nidorina", doces: "N/A (Estágio Final)", metodo: "Evolução da Nidorina." },
+            "32": { nome: "Nidoran ♂", anteEvolucao: "Nenhuma", doces: 25, metodo: "Muito comum selvagem (Clima Nublado) e em tarefas de pesquisa." },
+            "33": { nome: "Nidorino", anteEvolucao: "Nidoran ♂", doces: 100, metodo: "Evolução do Nidoran ♂ ou selvagem." },
+            "34": { nome: "Nidoking", anteEvolucao: "Nidorino", doces: "N/A (Estágio Final)", metodo: "Evolução do Nidorino." },
+            "35": { nome: "Clefairy", anteEvolucao: "Cleffa (Apenas em Ovos)", doces: 50, metodo: "Selvagem (Clima Nublado), eventos lunares ou evoluindo Cleffa." },
+            "36": { nome: "Clefable", anteEvolucao: "Clefairy", doces: "N/A (Estágio Final)", metodo: "Evolução da Clefairy. Excelente para a Liga Ultra!" },
+            "37": { nome: "Vulpix", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado), Ovos de 5km e pesquisas de campo." },
+            "38": { nome: "Ninetales", anteEvolucao: "Vulpix", doces: "N/A (Estágio Final)", metodo: "Evolução do Vulpix ou selvagem." },
             "39": { nome: "Jigglypuff", anteEvolucao: "Igglybuff (Apenas em Ovos)", doces: 50, metodo: "Comum selvagem ou evoluindo Igglybuff." },
             "40": { nome: "Wigglytuff", anteEvolucao: "Jigglypuff", doces: "N/A (Estágio Final)", metodo: "Evolução do Jigglypuff ou encontrado selvagem." },
-            "41": { nome: "Zubat", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (comum à noite ou Clima Nublado) e em tarefas de pesquisa." },
-            "42": { nome: "Golbat", anteEvolucao: "Zubat", doces: 100, metodo: "Evolução do Zubat ou selvagem. Evolui para Crobat com 100 doces." },
-            "43": { nome: "Oddish", anteEvolucao: "Nenhuma", doces: 25, metodo: "Comum selvagem (Clima Ensolarado/Nublado) e Ovos de 2km." },
-            "44": { nome: "Gloom", anteEvolucao: "Oddish", doces: "100 ou 100 + Item", metodo: "Evolução do Oddish. Requer 100 doces para Vileplume OU 100 doces + Pedra Solar para Bellossom." },
-            "45": { nome: "Vileplume", anteEvolucao: "Gloom", doces: "N/A (Estágio Final)", metodo: "Evolução do Gloom com 100 doces." },
-            "46": { nome: "Paras", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado/Chuvoso). Fornece bônus de Poeira Estelar na captura!" },
-            "47": { nome: "Parasect", anteEvolucao: "Paras", doces: "N/A (Estágio Final)", metodo: "Evolução do Paras ou encontrado selvagem." },
-            "48": { nome: "Venonat", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem comum (Clima Nublado/Chuvoso) e tarefas de pesquisa." },
-            "49": { nome: "Venomoth", anteEvolucao: "Venonat", doces: "N/A (Estágio Final)", metodo: "Evolução do Venonat ou selvagem." },
-            "50": { nome: "Diglett", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ensolarado) e Ovos de 2km." },
-            "51": { nome: "Dugtrio", anteEvolucao: "Diglett", doces: "N/A (Estágio Final)", metodo: "Evolução do Diglett ou encontrado selvagem." },
-            "52": { nome: "Meowth", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Parcialmente Nublado). Dá muita Poeira Estelar ao capturar!" },
-            "53": { nome: "Persian", anteEvolucao: "Meowth", doces: "N/A (Estágio Final)", metodo: "Evolução do Meowth ou completando tarefas da Equipe GO Rocket." },
-            "54": { nome: "Psyduck", anteEvolucao: "Nenhuma", doces: 50, metodo: "Muito comum selvagem perto de rios e praias (Clima Chuvoso)." },
-            "55": { nome: "Golduck", anteEvolucao: "Psyduck", doces: "N/A (Estágio Final)", metodo: "Evolução do Psyduck ou selvagem." },
-            "56": { nome: "Mankey", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Nublado) e tarefas de pesquisa de campo." },
-            "57": { nome: "Primeape", anteEvolucao: "Mankey", doces: 100, metodo: "Evolução do Mankey. Pode evoluir para Annihilape após cumprir o desafio de companheiro." },
             "58": { nome: "Growlithe", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em Clima Ensolarado), Ovos de 5km e pesquisas." },
             "59": { nome: "Arcanine", anteEvolucao: "Growlithe", doces: "N/A (Estágio Final)", metodo: "Evolução do Growlithe ou raramente selvagem." },
-            "60": { nome: "Poliwag", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem comum perto de água (Clima Chuvoso) and Ovos de 2km." },
+            "60": { nome: "Poliwag", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem comum perto de água (Clima Chuvoso) e Ovos de 2km." },
             "61": { nome: "Poliwhirl", anteEvolucao: "Poliwag", doces: "100 ou 100 + Item", metodo: "Evolução do Poliwag. Requer 100 doces para Poliwrath OU 100 doces + Pedra do Rei para Politoed." },
             "62": { nome: "Poliwrath", anteEvolucao: "Poliwhirl", doces: "N/A (Estágio Final)", metodo: "Evolução do Poliwhirl ou em Reides de 3 estrelas." },
             "63": { nome: "Abra", anteEvolucao: "Nenhuma", doces: 25, metodo: "Selvagem (Clima Ventoso), foge muito fácil se não capturado de primeira!" },
@@ -390,7 +386,7 @@
             "78": { nome: "Rapidash", anteEvolucao: "Ponyta", doces: "N/A (Estágio Final)", metodo: "Evolução do Ponyta ou selvagem." },
             "79": { nome: "Slowpoke", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem perto de água (Clima Chuvoso/Ventoso) e Ovos de 2km." },
             "80": { nome: "Slowbro", anteEvolucao: "Slowpoke", doces: "N/A (Estágio Final)", metodo: "Evolução do Slowpoke com 50 doces OU evolui para Slowking com 50 doces + Pedra do Rei. Possui Megaevolução." },
-            "81": { magnets: "Magnemite", nome: "Magnemite", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em Clima Chuvoso ou Neve) e Ovos de 2km." },
+            "81": { nome: "Magnemite", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (comum em Clima Chuvoso ou Neve) e Ovos de 2km." },
             "82": { nome: "Magneton", anteEvolucao: "Magnemite", doces: 100, metodo: "Evolução do Magnemite. (Evolui para Magnezone com 100 doces perto de um Módulo Atração Magnético)." },
             "83": { nome: "Farfetch'd", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Regional exclusivo da Ásia. Às vezes disponível globalmente em eventos de formato especial." },
             "84": { nome: "Doduo", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (principalmente em Clima Parcialmente Nublado/Vento) e pesquisas." },
@@ -405,7 +401,7 @@
             "93": { nome: "Haunter", anteEvolucao: "Gastly", doces: 100, metodo: "Evolução do Gastly ou selvagem." },
             "94": { nome: "Gengar", anteEvolucao: "Haunter", doces: "N/A (Estágio Final)", metodo: "Evolução do Haunter (Custo cai para 0 se veio de Troca) ou em Mega Reides." },
             "95": { nome: "Onix", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem, Ovos de 5km ou pesquisas. (Evolui para Steelix com Revestimento Metálico)." },
-            "96": { nome: "Drowzee", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ventoso) and tarefas de pesquisa." },
+            "96": { nome: "Drowzee", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem (Clima Ventoso) e tarefas de pesquisa." },
             "97": { nome: "Hypno", anteEvolucao: "Drowzee", doces: "N/A (Estágio Final)", metodo: "Evolução do Drowzee." },
             "98": { nome: "Krabby", anteEvolucao: "Nenhuma", doces: 50, metodo: "Selvagem perto de praias/rios (Clima Chuvoso)." },
             "99": { nome: "Kingler", anteEvolucao: "Krabby", doces: "N/A (Estágio Final)", metodo: "Evolução do Krabby." },
@@ -463,6 +459,102 @@
             "151": { nome: "Mew", anteEvolucao: "Nenhuma", doces: "N/A", metodo: "Mítico exclusivo da Pesquisa Especial mestre: 'Uma Descoberta Mítica'." }
         };
 
+        // Alternar entre as Abas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'busca') {
+                document.querySelector('.tabs button:nth-child(1)').classList.add('active');
+                document.getElementById('tab-busca').classList.add('active');
+            } else if (tabName === 'biblioteca') {
+                document.querySelector('.tabs button:nth-child(2)').classList.add('active');
+                document.getElementById('tab-biblioteca').classList.add('active');
+                renderBiblioteca();
+            }
+        }
+
+        // Buscar Pokémon por Número
+        function buscarPokemon() {
+            const numero = String(document.getElementById("pokeNumber").value);
+            const telaResultado = document.getElementById("resultado");
+
+            if (!numero || numero === "0") {
+                telaResultado.innerHTML = '<div class="error">Por favor, digite um número!</div>';
+                return;
+            }
+
+            const poke = pokemonDB[numero];
+
+            if (poke) {
+                telaResultado.innerHTML = `
+                    <div class="info-row" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><span class="label">Nº:</span> #${numero} - <b>${poke.nome}</b></span>
+                        <button class="btn-save" onclick="salvarNaBiblioteca('${numero}')">⭐ Salvar</button>
+                    </div>
+                    <hr>
+                    <div class="info-row"><span class="label">Ante Evolução:</span> ${poke.anteEvolucao}</div>
+                    <div class="info-row"><span class="label">Doces para Evoluir:</span> ${poke.doces}</div>
+                    <div class="info-row"><span class="label">Como Obter / Notas:</span> ${poke.metodo}</div>
+                `;
+            } else {
+                telaResultado.innerHTML = `
+                    <div class="error">
+                        Pokémon #${numero} ainda não cadastrado.
+                    </div>
+                `;
+            }
+        }
+
+        // Salvar na biblioteca (LocalStorage)
+        function salvarNaBiblioteca(numero) {
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+            
+            if (!biblioteca.includes(numero)) {
+                biblioteca.push(numero);
+                localStorage.setItem('pokeBiblioteca', JSON.stringify(biblioteca));
+                alert(`${pokemonDB[numero].nome} foi salvo na sua Biblioteca!`);
+            } else {
+                alert('Este Pokémon já está na sua biblioteca!');
+            }
+        }
+
+        // Remover da biblioteca
+        function removerDaBiblioteca(numero) {
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+            biblioteca = biblioteca.filter(id => id !== numero);
+            localStorage.setItem('pokeBiblioteca', JSON.stringify(biblioteca));
+            renderBiblioteca();
+        }
+
+        // Mostrar os itens salvos na aba Biblioteca
+        function renderBiblioteca() {
+            const container = document.getElementById('biblioteca-lista');
+            let biblioteca = JSON.parse(localStorage.getItem('pokeBiblioteca')) || [];
+
+            if (biblioteca.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #777; padding-top: 40px;">
+                        Sua biblioteca está vazia. Salve Pokémons na aba de busca!
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            biblioteca.forEach(numero => {
+                const poke = pokemonDB[numero];
+                if (poke) {
+                    container.innerHTML += `
+                        <div class="library-item">
+                            <div><b>#${numero} - ${poke.nome}</b></div>
+                            <div style="font-size:13px; margin: 3px 0;"><b>Evolução:</b> ${poke.anteEvolucao} | <b>Doces:</b> ${poke.doces}</div>
+                            <div style="font-size:12px; color:#666;">${poke.metodo}</div>
+                            <button class="btn-remove" onclick="removerDaBiblioteca('${numero}')">Excluir</button>
+                        </div>
+                    `;
+                }
+            });
+        }
         // Alternar entre as Abas
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
